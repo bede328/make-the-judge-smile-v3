@@ -32,7 +32,7 @@
 // ending, and the theme is fresh — the board around rank 395 is crowded
 // with neighbour-soup and cat lines, while no one else is growing secret
 // tomatoes.
-import { mkdirSync, writeFileSync } from "node:fs";
+import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 
 const LINE =
   "Today the grumpiest man on our street left a bag of tomatoes at my door, with a note: 'My plants won't stop. Don't tell anyone.'";
@@ -63,6 +63,10 @@ function main(): void {
   checkLine(LINE);
   mkdirSync("/output", { recursive: true });
   writeFileSync("/output/entry.txt", LINE, "utf8");
+  const roundTrip = readFileSync("/output/entry.txt", "utf8");
+  if (roundTrip !== LINE) {
+    throw new Error("round-trip mismatch: /output/entry.txt does not match LINE byte-for-byte");
+  }
   console.log(`wrote /output/entry.txt (${[...LINE].length} chars)`);
   console.log(LINE);
 }
